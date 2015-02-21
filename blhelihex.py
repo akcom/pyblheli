@@ -129,6 +129,11 @@ class BLHeliHex(object):
 
     def read(self, filename):
         """read the settings from a hex file"""
+        #make sure if we're editin atmel processor data, its an eep file
+        if self.atmel and filename.split('.')[-1].upper() != 'EEP':
+            raise Exception('ATMEL processor uses EEP files')
+        if not self.atmel and filename.split('.')[-1].upper() != 'HEX':
+            raise Exception('SiLabs processor uses HEX files')
         with open(filename, 'r') as f:
             self.data = f.read().split('\n')
 
