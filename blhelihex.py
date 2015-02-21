@@ -88,11 +88,7 @@ class BLHeliHex(object):
                 'fmt' : {1:0.75, 2: 0.88, 3: 1.00, 4:1.12, 5: 1.25}}
             }
 
-        #remember if this is an atmel hex, not currently supported
         self.atmel = atmel
-        if self.atmel is True:
-            raise Exception('ATMEL support not available (yet!)')
-
         #upon reading the settings, this is set to the index of the first line
         #in the hex which describes the settings
         self.settings_first_line_idx = -1
