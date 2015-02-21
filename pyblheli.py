@@ -47,24 +47,9 @@ def example():
 
     blh.write('out2.hex')
 
-def main(stdscr):
-    #stdscr = curses.initscr()
-    #curses.noecho()
-    #stdscr.keypad(1)
-
-    #curses.nocbreak(); stdscr.keypad(0); curses.echo()
-    #curses.endwin()
-    maxy,maxx = stdscr.getmaxyx()
-    maxy -= 1
-    curses.echo()
-
-
-    while True:
-
-        stdscr.addstr(maxy-1, 0, "Hello world")
-        stdscr.refresh()
-        c = stdscr.getch()
+def main():
+    example()
 
 
 if __name__ == '__main__':
-    curses.wrapper(main)
+    main()
