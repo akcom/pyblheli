@@ -1,30 +1,10 @@
 #!/usr/bin/python
-import os
-import os.path
 import blhelihex
-import sys
 import curses
 import curses.wrapper
 
-def clear():
-    os.system(['clear','cls'][os.name == 'nt'])
-
-#equivalent of the unix 'which' command
-def which(file):
-    for path in os.environ["PATH"].split(":"):
-        if os.path.exists(path + "/" + file):
-                return path + "/" + file
-
-    return None
-
 ##EXAMPLE USAGE
 def example():
-    avrdude = which('avrdude')
-    if avrdude is None:
-        print('ERROR: avrdude was not found,\
-              please add its location to your path variable')
-        sys.exit(1)
-
     #initialize the blheli hex reader
     blh = blhelihex.BLHeliHex(atmel=False)
     #read a hex file
