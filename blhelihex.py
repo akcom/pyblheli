@@ -139,7 +139,10 @@ class BLHeliHex(object):
         hex_buf = ''
         in_settings = False  #set to True when we hit the settings block
         num_lines = 0
-
+        if self.atmel:
+            line_start = ':100000'
+        else:
+            line_start = ':101A00'
         #find all the settings lines and concatenate them into one hex buffer
         for idx, line in enumerate(self.data):
             #check to see if we're in the settings
@@ -162,7 +165,7 @@ class BLHeliHex(object):
                     break
             #settings for SiLabs start at 1A00, so we look for ':101A00'
             #determine if we've found the settings block
-            if line.find(':101A00') == 0:
+            if line.find(line_start) == 0:
                 in_settings = True
                 hex_buf = line[9:-2]
                 self.settings_first_line_idx = idx
@@ -208,7 +211,10 @@ class BLHeliHex(object):
             raise Exception('Must read a hex file first')
 
         #start address
-        base_addr = 0x1A00
+        if self.atmel:
+            base_addr = 0x0000
+        else:
+            base_addr = 0x1A00
         #length of settings buf
         s_len = len(self.settings_buf)
         i = 0
