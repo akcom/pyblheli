@@ -30,11 +30,12 @@ def example():
     for k,v in constraints.iteritems():
         print('%s => %s' % (k,v))
 
-    #for the settings, you must provide the
+    #for the settings, you must provide the value as BLHeli expects it
+    #check self.LAYOUT in BLHeliHex.__init__ for what these values mean
 
-    blh['motor-gain'] = 1
-    blh['closed-loop'] = 2
-    blh['temp-protection'] = 2
+    blh['motor-gain'] = 1 #motor gain = x0.75
+    blh['closed-loop'] = 2 #closed loop = MidRange
+    blh['temp-protection'] = 2 #temp protection = Disabled
 
     #uncommenting the following line will raise an exception upon execution
     #you cannot change read-only settings
