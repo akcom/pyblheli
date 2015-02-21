@@ -17,7 +17,7 @@ class ConstraintException(Exception):
 
 class BLHeliHex(object):
     """The main class for reading BLHeli hex files"""
-    def __init__(self, atmel):
+    def __init__(self):
 
         #self.LAYOUT maps each setting to its various dependents
         #'pos' is the byte position in th eeprom
@@ -88,7 +88,6 @@ class BLHeliHex(object):
                 'fmt' : {1:0.75, 2: 0.88, 3: 1.00, 4:1.12, 5: 1.25}}
             }
 
-        self.atmel = atmel
         #upon reading the settings, this is set to the index of the first line
         #in the hex which describes the settings
         self.settings_first_line_idx = -1
@@ -103,6 +102,9 @@ class BLHeliHex(object):
     def printable(self, setting_name):
         """returns the current value for a given setting
         in human readable format"""
+        if self.data is None:
+            raise Exception('Must read file first')
+
         v = self.LAYOUT[setting_name]
         fmt = v['fmt']
         if type(fmt) is dict:
@@ -127,8 +129,15 @@ class BLHeliHex(object):
         else:
             return None
 
-    def read(self, filename):
+    def read_only(self, setting_name):
+        """returns True if a setting is read only, False otherwise"""
+        v = self.LAYOUT[setting_name]
+        return v.get('read-only', False)
+
+    def read(self, filename, atmel):
         """read the settings from a hex file"""
+
+        self.atmel = atmel
         #make sure if we're editin atmel processor data, its an eep file
         if self.atmel and filename.split('.')[-1].upper() != 'EEP':
             raise Exception('ATMEL processor uses EEP files')
@@ -275,7 +284,7 @@ class BLHeliHex(object):
             v = self.LAYOUT[name]
 
             #make sure its not read only
-            if v.get('read-only') is True:
+            if v.get('read-only', False) is True:
                 raise Exception('cannot change read only setting "%s"' % name)
 
             #make sure value is valid by checking against the dictionary
@@ -308,10 +317,14 @@ class BLHeliHex(object):
         return self.LAYOUT.keys()
 
     def values(self):
+        if self.data is None:
+            raise Exception('Must read file first')
         for k in self.LAYOUT.keys():
             yield self.LAYOUT[k]['val']
 
     def iteritems(self):
+        if self.data is None:
+            raise Exception('Must read file first')
         for k in self.LAYOUT.keys():
             yield (k, self.LAYOUT[k]['val'])
 
