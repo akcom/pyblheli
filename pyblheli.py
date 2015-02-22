@@ -157,7 +157,7 @@ def main(scr):
                     else:
                         print_err(scr,
                             'Unknown file type (only HEX and EEP accepted)')
-                except IOError as e:
+                except Exception as e:
                     print_err(scr, 'Unable to read file: %s' % e)
 
             else:
@@ -190,18 +190,24 @@ def main(scr):
             for i in range(0, len(items), 2):
                 k = items[i]
                 #first column text
-                s1 = '%s => %s' % (k, blh.printable(k))
+                s1 = ''
+                s2 = ''
+                try:
+                    s1 = '%s => %s' % (k, blh.printable(k))
 
-                #second column text
-                if i+1 < len(items):
-                    k = items[i+1]
-                    s2 = '%s => %s' % (k, blh.printable(k))
-                else:
-                    s2 = ''
+                    #second column text
+                    if i+1 < len(items):
+                        k = items[i+1]
+                        s2 = '%s => %s' % (k, blh.printable(k))
+                    else:
+                        s2 = ''
+                except Exception as e:
+                    scr.addstr('Error reading value @ %s - %s' % (k,e))
 
                 #concatenate the columns
                 line = '%-32s %s\n' % (s1, s2)
                 scr.addstr(line)
+                scr.refresh()
         elif cmd == 'es' or cmd == 'vs':
             #code is essentially the same except ES has a prompt at the end
             if len(args) != 1:
@@ -241,7 +247,8 @@ def main(scr):
 
 
 
-
+def wrap():
+    curses.wrapper(main)
 
 if __name__ == '__main__':
-    curses.wrapper(main)
+    wrap()
